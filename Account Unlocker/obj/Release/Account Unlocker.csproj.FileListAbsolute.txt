@@ -1,0 +1,21 @@
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\bin\Release\Account_Unlocker.exe.config
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\bin\Release\Account_Unlocker.exe
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\bin\Release\Account_Unlocker.pdb
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\AD_Unlocker.AboutBox1.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\AD_Unlocker.Form1.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\AD_Unlocker.PasswordReset.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\Account_Unlocker.Properties.Resources.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\Account Unlocker.csproj.GenerateResource.Cache
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\Account_Unlocker.exe
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\AD_Unlocker\AD_Unlocker\obj\Release\Account_Unlocker.pdb
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\bin\Release\Account Unlocker.exe.config
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\bin\Release\Account Unlocker.exe
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\bin\Release\Account Unlocker.pdb
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\Account Unlocker.csprojResolveAssemblyReference.cache
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\AD_Unlocker.AboutBox1.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\AD_Unlocker.Form1.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\AD_Unlocker.PasswordReset.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\Account_Unlocker.Properties.Resources.resources
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\Account Unlocker.csproj.GenerateResource.Cache
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\Account Unlocker.exe
+C:\Users\qojmo2\Google Drive\DEV\VisualStudio\Account Unlocker\Account Unlocker\obj\Release\Account Unlocker.pdb

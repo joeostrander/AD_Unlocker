@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Account Unlocker", "AD_Unlocker\Account Unlocker.csproj", "{DC4BF1F9-AC6D-45BA-963D-A6F692C9F167}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Account Unlocker", "Account Unlocker\Account Unlocker.csproj", "{DC4BF1F9-AC6D-45BA-963D-A6F692C9F167}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
