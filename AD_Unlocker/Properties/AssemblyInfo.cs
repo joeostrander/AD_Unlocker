@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AD_Unlocker")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Account Unlocker")]
+[assembly: AssemblyDescription("Does pretty much the same thing as LockoutStatus, but mine can be set to look to specific sites...because querying all domain controllers can be super slow!")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AD_Unlocker")]
+[assembly: AssemblyCompany("Joe Ostrander")]
+[assembly: AssemblyProduct("Account Unlocker")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

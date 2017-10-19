@@ -302,11 +302,15 @@ namespace AD_Unlocker
 
                 //Server, Site, User State, Bad Pwd Count, Last Bad Pwd, Pwd Last, Lockout Time, Orig Lock
                 LockoutData data = GetLockoutData(DC.Name);
-                
-
+                if (string.IsNullOrEmpty(data.user_id))
+                {
+                    MessageBox.Show("Could not find data for:  " + textBoxUserIDSearch.Text,"Not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
 
                 ListViewItem lvi = new ListViewItem(DC.Name);
                 lvi.SubItems.Add(dcShortName);
+                lvi.SubItems.Add(data.user_id);
                 lvi.SubItems.Add(DC.SiteName);
                 lvi.SubItems.Add(data.user_state);
                 lvi.SubItems.Add(data.bad_pwd_count.ToString());
@@ -328,7 +332,9 @@ namespace AD_Unlocker
             DirectoryEntry root = GetDirectoryEntry("LDAP://" + server);
             DirectorySearcher searcher = new DirectorySearcher(root);
 
-            string strFilter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + textBoxUserIDSearch.Text + "))";
+            string user_id = textBoxUserIDSearch.Text;
+
+            string strFilter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + user_id + "))";
 
             searcher.PageSize = 1000;
             searcher.Filter = strFilter;
@@ -336,10 +342,22 @@ namespace AD_Unlocker
             searcher.PropertiesToLoad.Add("pwdLastSet");
             searcher.PropertiesToLoad.Add("msDS-ReplAttributeMetaData");
 
-            SearchResult result = searcher.FindOne();
+            SearchResult result;
+            try
+            {
+                result = searcher.FindOne();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ld;
+            }
+            
 
             if (result != null)
             {
+                ld.user_id = user_id;
+
                 if (result.Properties.Contains("userAccountControl"))
                 {
                     int userAccountControlValue = (int)result.Properties["userAccountControl"][0];
@@ -449,6 +467,8 @@ namespace AD_Unlocker
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            this.Text = Application.ProductName;
             //prepopulate the domain list
             FillDomainList();
         }
@@ -484,6 +504,123 @@ namespace AD_Unlocker
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+            unlockToolStripMenuItem.Visible = true;
+
+            
+            if (listView1.SelectedIndices.Count == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            int intSelectedIndex = listView1.SelectedIndices[0];
+
+            int colIndexServer = GetColumnIndex(listView1, "Server Full Name");
+            int colIndexUserState = GetColumnIndex(listView1, "User State");
+            string user_id = textBoxUserIDSearch.Text;
+            string user_state = listView1.Items[intSelectedIndex].SubItems[colIndexUserState].Text;
+            string server = listView1.Items[intSelectedIndex].SubItems[colIndexServer].Text;
+
+            if (user_state!= "Locked")
+            {
+                unlockToolStripMenuItem.Visible = false;
+                //e.Cancel = true;
+                //return;
+            }
+
+
+
+        }
+
+        private int GetColumnIndex(ListView lvi, string strColumnTitle)
+        {
+            foreach (ColumnHeader col in lvi.Columns)
+            {
+                if (col.Text == strColumnTitle)
+                {
+                    return col.Index;
+                }
+            }
+            return 9999;
+        }
+
+        private void unlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int intSelectedIndex = listView1.SelectedIndices[0];
+            int colIndexServer = GetColumnIndex(listView1, "Server Full Name");
+            int colUserState = GetColumnIndex(listView1, "User State");
+            int colUserId = GetColumnIndex(listView1, "User ID");
+
+            string server = listView1.Items[intSelectedIndex].SubItems[colIndexServer].Text;
+            string username = listView1.Items[intSelectedIndex].SubItems[colUserId].Text; ;
+                        
+            PrincipalContext principalContext = GetPrincipalContext(server);
+            UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, username);
+
+            userPrincipal.UnlockAccount();
+
+            if (userPrincipal.IsAccountLockedOut())
+            {
+                MessageBox.Show("Account unlock failed.", "Unlock account", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            } 
+            else
+            {
+                MessageBox.Show("Account unlocked successfully.", "Unlock account", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                listView1.Items[intSelectedIndex].SubItems[colUserState].Text = "Not Locked";
+            }
+             
+
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox1 aboot = new AboutBox1();
+            aboot.ShowDialog();
+        }
+
+        private void passwordResetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            int intSelectedIndex = listView1.SelectedIndices[0];
+            int colIndexServer = GetColumnIndex(listView1, "Server Full Name");
+            int colUserId = GetColumnIndex(listView1, "User ID");
+
+            string server = listView1.Items[intSelectedIndex].SubItems[colIndexServer].Text;
+            string username = listView1.Items[intSelectedIndex].SubItems[colUserId].Text; ;
+
+            PrincipalContext principalContext = GetPrincipalContext(server);
+            UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, username);
+
+            using (PasswordReset passDlg = new PasswordReset())
+            {
+                passDlg.UserID = username;
+                DialogResult result = passDlg.ShowDialog();
+                
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        userPrincipal.SetPassword(passDlg.NewPassword);
+                        if (passDlg.MustChange)
+                        {
+                            userPrincipal.ExpirePasswordNow();
+                        }                        
+                        MessageBox.Show("Password reset successfully.","Password reset",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Password reset failed.\n\n"+ex.Message, "Password reset", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    
+                    
+                }
+            }
+                
         }
     }
 }

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.labelDomain = new System.Windows.Forms.Label();
             this.comboBoxDomain = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,6 +51,14 @@
             this.columnHeaderLockoutTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderOrigLock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderServerFullName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStripListView1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripForm = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.columnHeaderUserId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStripListView1.SuspendLayout();
+            this.contextMenuStripForm.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelDomain
@@ -113,6 +123,7 @@
             // 
             // comboBoxSite
             // 
+            this.comboBoxSite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSite.FormattingEnabled = true;
             this.comboBoxSite.Items.AddRange(new object[] {
             "Get sites..."});
@@ -156,6 +167,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderServerFullName,
             this.columnHeaderServer,
+            this.columnHeaderUserId,
             this.columnHeaderSite,
             this.columnHeaderUserState,
             this.columnHeaderBadPwdCount,
@@ -163,11 +175,12 @@
             this.columnHeaderPwdLastSet,
             this.columnHeaderLockoutTime,
             this.columnHeaderOrigLock});
+            this.listView1.ContextMenuStrip = this.contextMenuStripListView1;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(12, 136);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(644, 374);
+            this.listView1.Size = new System.Drawing.Size(813, 374);
             this.listView1.TabIndex = 13;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -183,37 +196,89 @@
             // columnHeaderUserState
             // 
             this.columnHeaderUserState.Text = "User State";
+            this.columnHeaderUserState.Width = 87;
             // 
             // columnHeaderBadPwdCount
             // 
             this.columnHeaderBadPwdCount.Text = "Bad Pwd Count";
+            this.columnHeaderBadPwdCount.Width = 100;
             // 
             // columnHeaderLastBadPwd
             // 
             this.columnHeaderLastBadPwd.Text = "Last Bad Pwd";
+            this.columnHeaderLastBadPwd.Width = 140;
             // 
             // columnHeaderPwdLastSet
             // 
             this.columnHeaderPwdLastSet.Text = "Pwd Last Set";
+            this.columnHeaderPwdLastSet.Width = 140;
             // 
             // columnHeaderLockoutTime
             // 
             this.columnHeaderLockoutTime.Text = "Lockout Time";
+            this.columnHeaderLockoutTime.Width = 140;
             // 
             // columnHeaderOrigLock
             // 
             this.columnHeaderOrigLock.Text = "Orig Lock";
+            this.columnHeaderOrigLock.Width = 80;
             // 
             // columnHeaderServerFullName
             // 
             this.columnHeaderServerFullName.Text = "Server Full Name";
             this.columnHeaderServerFullName.Width = 0;
             // 
+            // contextMenuStripListView1
+            // 
+            this.contextMenuStripListView1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.unlockToolStripMenuItem,
+            this.passwordResetToolStripMenuItem});
+            this.contextMenuStripListView1.Name = "contextMenuStripListView1";
+            this.contextMenuStripListView1.ShowImageMargin = false;
+            this.contextMenuStripListView1.Size = new System.Drawing.Size(131, 48);
+            this.contextMenuStripListView1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // unlockToolStripMenuItem
+            // 
+            this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
+            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.unlockToolStripMenuItem.Text = "&Unlock";
+            this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
+            // 
+            // contextMenuStripForm
+            // 
+            this.contextMenuStripForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.contextMenuStripForm.Name = "contextMenuStripForm";
+            this.contextMenuStripForm.ShowImageMargin = false;
+            this.contextMenuStripForm.Size = new System.Drawing.Size(83, 26);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // passwordResetToolStripMenuItem
+            // 
+            this.passwordResetToolStripMenuItem.Name = "passwordResetToolStripMenuItem";
+            this.passwordResetToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.passwordResetToolStripMenuItem.Text = "&Password Reset";
+            this.passwordResetToolStripMenuItem.Click += new System.EventHandler(this.passwordResetToolStripMenuItem_Click);
+            // 
+            // columnHeaderUserId
+            // 
+            this.columnHeaderUserId.Text = "User ID";
+            this.columnHeaderUserId.Width = 0;
+            // 
             // Form1
             // 
+            this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(668, 522);
+            this.ClientSize = new System.Drawing.Size(837, 522);
+            this.ContextMenuStrip = this.contextMenuStripForm;
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.buttonGo);
             this.Controls.Add(this.textBoxUserIDSearch);
@@ -226,9 +291,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBoxDomain);
             this.Controls.Add(this.labelDomain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(760, 500);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.contextMenuStripListView1.ResumeLayout(false);
+            this.contextMenuStripForm.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,6 +326,12 @@
         private System.Windows.Forms.ColumnHeader columnHeaderLockoutTime;
         private System.Windows.Forms.ColumnHeader columnHeaderOrigLock;
         private System.Windows.Forms.ColumnHeader columnHeaderServerFullName;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripListView1;
+        private System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripForm;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem passwordResetToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeaderUserId;
     }
 }
 
