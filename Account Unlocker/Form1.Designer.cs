@@ -42,7 +42,9 @@
             this.textBoxUserIDSearch = new System.Windows.Forms.TextBox();
             this.buttonGo = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeaderServerFullName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderServer = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderUserId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderSite = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderUserState = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderBadPwdCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -50,13 +52,12 @@
             this.columnHeaderPwdLastSet = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLockoutTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderOrigLock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderServerFullName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStripListView1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripForm = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.passwordResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeaderUserId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderPasswordAge = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStripListView1.SuspendLayout();
             this.contextMenuStripForm.SuspendLayout();
             this.SuspendLayout();
@@ -174,20 +175,31 @@
             this.columnHeaderLastBadPwd,
             this.columnHeaderPwdLastSet,
             this.columnHeaderLockoutTime,
-            this.columnHeaderOrigLock});
+            this.columnHeaderOrigLock,
+            this.columnHeaderPasswordAge});
             this.listView1.ContextMenuStrip = this.contextMenuStripListView1;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(12, 136);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(813, 374);
+            this.listView1.Size = new System.Drawing.Size(907, 374);
             this.listView1.TabIndex = 13;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeaderServerFullName
+            // 
+            this.columnHeaderServerFullName.Text = "Server Full Name";
+            this.columnHeaderServerFullName.Width = 0;
+            // 
             // columnHeaderServer
             // 
             this.columnHeaderServer.Text = "Server";
+            // 
+            // columnHeaderUserId
+            // 
+            this.columnHeaderUserId.Text = "User ID";
+            this.columnHeaderUserId.Width = 0;
             // 
             // columnHeaderSite
             // 
@@ -223,11 +235,6 @@
             this.columnHeaderOrigLock.Text = "Orig Lock";
             this.columnHeaderOrigLock.Width = 80;
             // 
-            // columnHeaderServerFullName
-            // 
-            this.columnHeaderServerFullName.Text = "Server Full Name";
-            this.columnHeaderServerFullName.Width = 0;
-            // 
             // contextMenuStripListView1
             // 
             this.contextMenuStripListView1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -245,6 +252,13 @@
             this.unlockToolStripMenuItem.Text = "&Unlock";
             this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
             // 
+            // passwordResetToolStripMenuItem
+            // 
+            this.passwordResetToolStripMenuItem.Name = "passwordResetToolStripMenuItem";
+            this.passwordResetToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.passwordResetToolStripMenuItem.Text = "&Password Reset";
+            this.passwordResetToolStripMenuItem.Click += new System.EventHandler(this.passwordResetToolStripMenuItem_Click);
+            // 
             // contextMenuStripForm
             // 
             this.contextMenuStripForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -260,24 +274,17 @@
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // passwordResetToolStripMenuItem
+            // columnHeaderPasswordAge
             // 
-            this.passwordResetToolStripMenuItem.Name = "passwordResetToolStripMenuItem";
-            this.passwordResetToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.passwordResetToolStripMenuItem.Text = "&Password Reset";
-            this.passwordResetToolStripMenuItem.Click += new System.EventHandler(this.passwordResetToolStripMenuItem_Click);
-            // 
-            // columnHeaderUserId
-            // 
-            this.columnHeaderUserId.Text = "User ID";
-            this.columnHeaderUserId.Width = 0;
+            this.columnHeaderPasswordAge.Text = "Password Age";
+            this.columnHeaderPasswordAge.Width = 100;
             // 
             // Form1
             // 
             this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(837, 522);
+            this.ClientSize = new System.Drawing.Size(931, 522);
             this.ContextMenuStrip = this.contextMenuStripForm;
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.buttonGo);
@@ -332,6 +339,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem passwordResetToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeaderUserId;
+        private System.Windows.Forms.ColumnHeader columnHeaderPasswordAge;
     }
 }
 

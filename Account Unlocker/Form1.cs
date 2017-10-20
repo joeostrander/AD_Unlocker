@@ -13,7 +13,10 @@ namespace AD_Unlocker
     {
 
         /*
-         TO DO:  add context menu option to unlock             
+         TO DO:  
+         add password expires column
+         add option to search by name
+               
              */
 
 
@@ -32,6 +35,7 @@ namespace AD_Unlocker
             public string pwd_last_set;
             public string lockout_time;
             public string orig_lock;
+            public string password_age;
         }
 
         [Flags()]
@@ -275,6 +279,18 @@ namespace AD_Unlocker
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(comboBoxSite.Text))
+            {
+                DialogResult ret = MessageBox.Show("Search ALL domain controlers?", "Search All DCs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                if (ret!= DialogResult.Yes)
+                {
+                    comboBoxSite.Focus();
+                    return;
+                }
+            }
+
+            EnableControls(false);
+
             //Clear list
             listView1.Items.Clear();
             
@@ -305,6 +321,7 @@ namespace AD_Unlocker
                 if (string.IsNullOrEmpty(data.user_id))
                 {
                     MessageBox.Show("Could not find data for:  " + textBoxUserIDSearch.Text,"Not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    EnableControls(true);
                     return;
                 }
 
@@ -318,11 +335,24 @@ namespace AD_Unlocker
                 lvi.SubItems.Add(data.pwd_last_set);
                 lvi.SubItems.Add(data.lockout_time);
                 lvi.SubItems.Add(data.orig_lock);
+                lvi.SubItems.Add(data.password_age);
 
 
                 listView1.Items.Add(lvi);
             }
-            
+
+            EnableControls(true);
+        }
+
+        private void EnableControls(bool v)
+        {
+            buttonGo.Enabled = v;
+            comboBoxDomain.Enabled = v;
+            textBoxUsername.Enabled = v;
+            textBoxPassword.Enabled = v;
+            comboBoxSite.Enabled = v;
+            textBoxUserIDSearch.Enabled = v;
+            listView1.Enabled = v;
         }
 
         private LockoutData GetLockoutData(string server)
@@ -369,7 +399,11 @@ namespace AD_Unlocker
                 if (result.Properties.Contains("pwdLastSet"))
                 {
                     long lngPasswordChanged = (long)result.Properties["pwdLastSet"][0];
-                    ld.pwd_last_set = DateTime.FromFileTime(lngPasswordChanged).ToString();
+                    DateTime dtmLastSet = DateTime.FromFileTime(lngPasswordChanged);
+                    ld.pwd_last_set = dtmLastSet.ToString();
+                    int intDaysOld = (int)(DateTime.Now - dtmLastSet).TotalDays;
+                    string suffix = intDaysOld > 1 ? " days" : " day";
+                    ld.password_age = intDaysOld.ToString() + suffix;
                 }
 
 
