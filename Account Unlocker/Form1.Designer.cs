@@ -1,4 +1,4 @@
-﻿namespace AD_Unlocker
+﻿namespace Account_Unlocker
 {
     partial class Form1
     {
@@ -38,7 +38,7 @@
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.comboBoxSite = new System.Windows.Forms.ComboBox();
-            this.labelUserIDSearch = new System.Windows.Forms.Label();
+            this.labelUserID = new System.Windows.Forms.Label();
             this.textBoxUserIDSearch = new System.Windows.Forms.TextBox();
             this.buttonGo = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -52,12 +52,13 @@
             this.columnHeaderPwdLastSet = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLockoutTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderOrigLock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderPasswordAge = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStripListView1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.passwordResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripForm = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeaderPasswordAge = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.buttonFindUser = new System.Windows.Forms.Button();
             this.contextMenuStripListView1.SuspendLayout();
             this.contextMenuStripForm.SuspendLayout();
             this.SuspendLayout();
@@ -69,7 +70,7 @@
             this.labelDomain.Name = "labelDomain";
             this.labelDomain.Size = new System.Drawing.Size(46, 13);
             this.labelDomain.TabIndex = 0;
-            this.labelDomain.Text = "Domain:";
+            this.labelDomain.Text = "&Domain:";
             // 
             // comboBoxDomain
             // 
@@ -87,16 +88,16 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(96, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Login ID (optional):";
+            this.label1.Text = "&Login ID (optional):";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(334, 9);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 13);
+            this.label2.Size = new System.Drawing.Size(102, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Password:";
+            this.label2.Text = "&Password (optional):";
             // 
             // label3
             // 
@@ -105,7 +106,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(28, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Site:";
+            this.label3.Text = "S&ite:";
             // 
             // textBoxUsername
             // 
@@ -134,14 +135,14 @@
             this.comboBoxSite.TabIndex = 9;
             this.comboBoxSite.SelectedIndexChanged += new System.EventHandler(this.comboBoxGetSites_SelectedIndexChanged);
             // 
-            // labelUserIDSearch
+            // labelUserID
             // 
-            this.labelUserIDSearch.AutoSize = true;
-            this.labelUserIDSearch.Location = new System.Drawing.Point(12, 67);
-            this.labelUserIDSearch.Name = "labelUserIDSearch";
-            this.labelUserIDSearch.Size = new System.Drawing.Size(83, 13);
-            this.labelUserIDSearch.TabIndex = 10;
-            this.labelUserIDSearch.Text = "Search User ID:";
+            this.labelUserID.AutoSize = true;
+            this.labelUserID.Location = new System.Drawing.Point(12, 67);
+            this.labelUserID.Name = "labelUserID";
+            this.labelUserID.Size = new System.Drawing.Size(46, 13);
+            this.labelUserID.TabIndex = 10;
+            this.labelUserID.Text = "&User ID:";
             // 
             // textBoxUserIDSearch
             // 
@@ -156,7 +157,7 @@
             this.buttonGo.Name = "buttonGo";
             this.buttonGo.Size = new System.Drawing.Size(75, 23);
             this.buttonGo.TabIndex = 12;
-            this.buttonGo.Text = "Search";
+            this.buttonGo.Text = "&Status";
             this.buttonGo.UseVisualStyleBackColor = true;
             this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
             // 
@@ -199,7 +200,6 @@
             // columnHeaderUserId
             // 
             this.columnHeaderUserId.Text = "User ID";
-            this.columnHeaderUserId.Width = 0;
             // 
             // columnHeaderSite
             // 
@@ -234,6 +234,11 @@
             // 
             this.columnHeaderOrigLock.Text = "Orig Lock";
             this.columnHeaderOrigLock.Width = 80;
+            // 
+            // columnHeaderPasswordAge
+            // 
+            this.columnHeaderPasswordAge.Text = "Password Age";
+            this.columnHeaderPasswordAge.Width = 100;
             // 
             // contextMenuStripListView1
             // 
@@ -274,10 +279,15 @@
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // columnHeaderPasswordAge
+            // buttonFindUser
             // 
-            this.columnHeaderPasswordAge.Text = "Password Age";
-            this.columnHeaderPasswordAge.Width = 100;
+            this.buttonFindUser.Location = new System.Drawing.Point(268, 81);
+            this.buttonFindUser.Name = "buttonFindUser";
+            this.buttonFindUser.Size = new System.Drawing.Size(75, 23);
+            this.buttonFindUser.TabIndex = 14;
+            this.buttonFindUser.Text = "&Find User ID";
+            this.buttonFindUser.UseVisualStyleBackColor = true;
+            this.buttonFindUser.Click += new System.EventHandler(this.buttonFindUser_Click);
             // 
             // Form1
             // 
@@ -286,10 +296,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(931, 522);
             this.ContextMenuStrip = this.contextMenuStripForm;
+            this.Controls.Add(this.buttonFindUser);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.buttonGo);
             this.Controls.Add(this.textBoxUserIDSearch);
-            this.Controls.Add(this.labelUserIDSearch);
+            this.Controls.Add(this.labelUserID);
             this.Controls.Add(this.comboBoxSite);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.textBoxUsername);
@@ -320,7 +331,7 @@
         private System.Windows.Forms.TextBox textBoxUsername;
         private System.Windows.Forms.TextBox textBoxPassword;
         private System.Windows.Forms.ComboBox comboBoxSite;
-        private System.Windows.Forms.Label labelUserIDSearch;
+        private System.Windows.Forms.Label labelUserID;
         private System.Windows.Forms.TextBox textBoxUserIDSearch;
         private System.Windows.Forms.Button buttonGo;
         private System.Windows.Forms.ListView listView1;
@@ -340,6 +351,7 @@
         private System.Windows.Forms.ToolStripMenuItem passwordResetToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeaderUserId;
         private System.Windows.Forms.ColumnHeader columnHeaderPasswordAge;
+        private System.Windows.Forms.Button buttonFindUser;
     }
 }
 

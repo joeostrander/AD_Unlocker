@@ -1,4 +1,4 @@
-﻿namespace AD_Unlocker
+﻿namespace Account_Unlocker
 {
     partial class PasswordReset
     {

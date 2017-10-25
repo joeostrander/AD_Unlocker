@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AD_Unlocker
+namespace Account_Unlocker
 {
     static class Program
     {

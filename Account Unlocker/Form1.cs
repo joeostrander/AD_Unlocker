@@ -7,7 +7,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace AD_Unlocker
+namespace Account_Unlocker
 {
     public partial class Form1 : Form
     {
@@ -38,31 +38,7 @@ namespace AD_Unlocker
             public string password_age;
         }
 
-        [Flags()]
-        public enum ADS_USER_FLAG_ENUM
-        {
-            ADS_UF_SCRIPT = 0X0001,
-            ADS_UF_ACCOUNTDISABLE = 0X0002,
-            ADS_UF_HOMEDIR_REQUIRED = 0X0008,
-            ADS_UF_LOCKOUT = 0X0010,
-            ADS_UF_PASSWD_NOTREQD = 0X0020,
-            ADS_UF_PASSWD_CANT_CHANGE = 0X0040,
-            ADS_UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED = 0X0080,
-            ADS_UF_TEMP_DUPLICATE_ACCOUNT = 0X0100,
-            ADS_UF_NORMAL_ACCOUNT = 0X0200,
-            ADS_UF_INTERDOMAIN_TRUST_ACCOUNT = 0X0800,
-            ADS_UF_WORKSTATION_TRUST_ACCOUNT = 0X1000,
-            ADS_UF_SERVER_TRUST_ACCOUNT = 0X2000,
-            ADS_UF_DONT_EXPIRE_PASSWD = 0X10000,
-            ADS_UF_MNS_LOGON_ACCOUNT = 0X20000,
-            ADS_UF_SMARTCARD_REQUIRED = 0X40000,
-            ADS_UF_TRUSTED_FOR_DELEGATION = 0X80000,
-            ADS_UF_NOT_DELEGATED = 0X100000,
-            ADS_UF_USE_DES_KEY_ONLY = 0x200000,
-            ADS_UF_DONT_REQUIRE_PREAUTH = 0x400000,
-            ADS_UF_PASSWORD_EXPIRED = 0x800000,
-            ADS_UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION = 0x1000000
-        }
+
 
 
         public Form1()
@@ -105,97 +81,6 @@ namespace AD_Unlocker
         }
     
 
-
-        private string GetDefaultNamingContext()
-        {
-            string strDomain = comboBoxDomain.Text;
-            string dnc = null;
-            if (!string.IsNullOrEmpty(strDomain))
-            {
-                DirectoryEntry ent = GetDirectoryEntry("LDAP://" + strDomain + "/RootDSE");
-                if (ent.Properties.Contains("defaultNamingContext"))
-                {
-                    dnc = ent.Properties["defaultNamingContext"][0].ToString();
-                }
-            }
-
-            return dnc;
-        }
-
-        private Forest GetForest()
-        {
-            Forest forest = null;
-
-            DirectoryContext contextForest = GetContext(DirectoryContextType.Forest);
-
-            try
-            {
-                forest = Forest.GetForest(contextForest);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error getting forest", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            return forest;
-        }
-
-        private DirectoryContext GetContext(DirectoryContextType contextType)
-        {
-            string strDomain = comboBoxDomain.Text;
-            string strUsername = textBoxUsername.Text;
-            string strPassword = textBoxPassword.Text;
-
-            DirectoryContext cont= null;
-            if (!string.IsNullOrEmpty(strDomain))
-            {
-                if (string.IsNullOrEmpty(strUsername))
-                {
-                    cont = new DirectoryContext(contextType, strDomain);
-                }
-                else
-                {
-                    cont = new DirectoryContext(contextType, strDomain, strUsername, strPassword);
-                }
-            }
-            
-            return cont;
-        }
-
-        private DirectoryEntry GetDirectoryEntry(string path)
-        {
-
-            
-            string strDomain = comboBoxDomain.Text;
-            string strUsername = textBoxUsername.Text;
-            string strPassword = textBoxPassword.Text;
-
-
-            DirectoryEntry entry = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(strDomain))
-                {
-                    if (string.IsNullOrEmpty(strUsername))
-                    {
-                        entry = new DirectoryEntry(path);
-                    }
-                    else
-                    {
-                        //entry = new DirectoryEntry(path, strUsername, strPassword);
-                        entry = new DirectoryEntry(path, strUsername, strPassword, AuthenticationTypes.Secure);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            
-
-            return entry;
-        }
 
 
 
@@ -240,6 +125,8 @@ namespace AD_Unlocker
         {
             List<ActiveDirectorySite> sites = new List<ActiveDirectorySite>();
             string strDomain = comboBoxDomain.Text;
+            string strLoginID = textBoxUsername.Text;
+            string strLoginPassword = textBoxPassword.Text;
             string strConfigurationNamingContext;
 
 
@@ -248,7 +135,7 @@ namespace AD_Unlocker
 
             if (!string.IsNullOrEmpty(strDomain))
             {
-                DirectoryEntry ent = GetDirectoryEntry("LDAP://" + strDomain + "/RootDSE");
+                DirectoryEntry ent = AD.GetDirectoryEntry("LDAP://" + strDomain + "/RootDSE",strLoginID,strLoginPassword);
                 if (ent == null)
                     return sites;
 
@@ -258,7 +145,7 @@ namespace AD_Unlocker
                     {
                         strConfigurationNamingContext = ent.Properties["configurationNamingContext"][0].ToString();
                         string strSitesContainer = "LDAP://" + strDomain + "/cn=Sites," + strConfigurationNamingContext;
-                        Forest x = GetForest();
+                        Forest x = AD.GetForest(strDomain, strLoginID, strLoginPassword);
                         foreach (ActiveDirectorySite site in x.Sites)
                         {
                             sites.Add(site);
@@ -279,6 +166,9 @@ namespace AD_Unlocker
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(textBoxUserIDSearch.Text))
+                return;
+
             if (string.IsNullOrEmpty(comboBoxSite.Text))
             {
                 DialogResult ret = MessageBox.Show("Search ALL domain controlers?", "Search All DCs?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
@@ -357,146 +247,147 @@ namespace AD_Unlocker
 
         private LockoutData GetLockoutData(string server)
         {
-            LockoutData ld = new LockoutData();
-
-            DirectoryEntry root = GetDirectoryEntry("LDAP://" + server);
-            DirectorySearcher searcher = new DirectorySearcher(root);
+            //string strDomain = comboBoxDomain.Text;
+            string strLoginID = textBoxUsername.Text;
+            string strLoginPassword = textBoxPassword.Text;
 
             string user_id = textBoxUserIDSearch.Text;
 
-            string strFilter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + user_id + "))";
+            LockoutData ld = new LockoutData();
 
-            searcher.PageSize = 1000;
-            searcher.Filter = strFilter;
-            searcher.PropertiesToLoad.Add("userAccountControl");
-            searcher.PropertiesToLoad.Add("pwdLastSet");
-            searcher.PropertiesToLoad.Add("msDS-ReplAttributeMetaData");
-
-            SearchResult result;
-            try
-            {
-                result = searcher.FindOne();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+            if (string.IsNullOrEmpty(user_id))
                 return ld;
-            }
+
+            //DirectoryEntry root = AD.GetDirectoryEntry("LDAP://" + server,strLoginID,strLoginPassword);
+            //DirectorySearcher searcher = new DirectorySearcher(root);
+
+
+
+            //string strFilter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + user_id + "))";
+
+            //searcher.PageSize = 1000;
+            //searcher.Filter = strFilter;
+            //searcher.PropertiesToLoad.Add("userAccountControl");
+            //searcher.PropertiesToLoad.Add("pwdLastSet");
+            //searcher.PropertiesToLoad.Add("msDS-ReplAttributeMetaData");
+
+            //SearchResult result;
+            //try
+            //{
+            //    result = searcher.FindOne();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //    return ld;
+            //}
+
+            string strFilter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + user_id + "))";
+            string[] props = { "userAccountControl", "pwdLastSet", "msDS-ReplAttributeMetaData" };
+            SearchResultCollection results = AD.GetSearchResults(server, strFilter, props, strLoginID, strLoginPassword);
             
-
-            if (result != null)
+            if (results != null)
             {
-                ld.user_id = user_id;
-
-                if (result.Properties.Contains("userAccountControl"))
+                if (results.Count == 0)
                 {
-                    int userAccountControlValue = (int)result.Properties["userAccountControl"][0];
-                    ADS_USER_FLAG_ENUM userAccountControl = (ADS_USER_FLAG_ENUM)userAccountControlValue;
-
-                    ld.user_state = (userAccountControlValue & (int)ADS_USER_FLAG_ENUM.ADS_UF_LOCKOUT) == (int)ADS_USER_FLAG_ENUM.ADS_UF_LOCKOUT ? "Locked" : "Not Locked";
+                    //MessageBox.Show("Not found:  " + user_id, "Not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-
-                if (result.Properties.Contains("pwdLastSet"))
+                else
                 {
-                    long lngPasswordChanged = (long)result.Properties["pwdLastSet"][0];
-                    DateTime dtmLastSet = DateTime.FromFileTime(lngPasswordChanged);
-                    ld.pwd_last_set = dtmLastSet.ToString();
-                    int intDaysOld = (int)(DateTime.Now - dtmLastSet).TotalDays;
-                    string suffix = intDaysOld > 1 ? " days" : " day";
-                    ld.password_age = intDaysOld.ToString() + suffix;
-                }
+                    SearchResult result = results[0];
 
+                    ld.user_id = user_id;
 
-                //Console.WriteLine(xml);
-
-                PrincipalContext principalContext = GetPrincipalContext(server);
-                UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, textBoxUserIDSearch.Text);
-
-                if (userPrincipal.IsAccountLockedOut())
-                {
-                    ld.user_state = "Locked";
-                    
-                    ld.bad_pwd_count = userPrincipal.BadLogonCount;
-                    //userPrincipal.UnlockAccount()
-                    //userPrincipal.SetPassword()
-                    //userPrincipal.Save()
-                    //userPrincipal.RefreshExpiredPassword()
-                    //userPrincipal.LastBadPasswordAttempt
-                    foreach (string prop in result.Properties["msDS-ReplAttributeMetaData"])
+                    if (result.Properties.Contains("userAccountControl"))
                     {
-                        if (prop.ToLower().Contains("lockouttime") && prop.ToLower().Contains("pszlastoriginatingdsadn"))
+                        int userAccountControlValue = (int)result.Properties["userAccountControl"][0];
+                        AD.ADS_USER_FLAG_ENUM userAccountControl = (AD.ADS_USER_FLAG_ENUM)userAccountControlValue;
+
+                        ld.user_state = (userAccountControlValue & (int)AD.ADS_USER_FLAG_ENUM.ADS_UF_LOCKOUT) == (int)AD.ADS_USER_FLAG_ENUM.ADS_UF_LOCKOUT ? "Locked" : "Not Locked";
+                    }
+
+                    if (result.Properties.Contains("pwdLastSet"))
+                    {
+                        long lngPasswordChanged = (long)result.Properties["pwdLastSet"][0];
+                        DateTime dtmLastSet = DateTime.FromFileTime(lngPasswordChanged);
+                        ld.pwd_last_set = dtmLastSet.ToString();
+                        int intDaysOld = (int)(DateTime.Now - dtmLastSet).TotalDays;
+                        string suffix = intDaysOld > 1 ? " days" : " day";
+                        ld.password_age = intDaysOld.ToString() + suffix;
+                    }
+
+
+                    //Console.WriteLine(xml);
+
+                    PrincipalContext principalContext = AD.GetPrincipalContext(server, strLoginID, strLoginPassword);
+                    UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, textBoxUserIDSearch.Text);
+
+                    if (userPrincipal.IsAccountLockedOut())
+                    {
+                        ld.user_state = "Locked";
+
+                        ld.bad_pwd_count = userPrincipal.BadLogonCount;
+                        //userPrincipal.UnlockAccount()
+                        //userPrincipal.SetPassword()
+                        //userPrincipal.Save()
+                        //userPrincipal.RefreshExpiredPassword()
+                        //userPrincipal.LastBadPasswordAttempt
+                        foreach (string property in result.Properties["msDS-ReplAttributeMetaData"])
                         {
-                            XmlDocument xmlDoc = new XmlDocument();
-                            xmlDoc.LoadXml(prop);
-
-                            Console.WriteLine("*****************");
-                            Console.WriteLine(xmlDoc.SelectSingleNode("DS_REPL_ATTR_META_DATA/pszLastOriginatingDsaDN").InnerText);
-                            Console.WriteLine(xmlDoc.SelectSingleNode("DS_REPL_ATTR_META_DATA/pszLastOriginatingDsaDN").Value);
-                            Console.WriteLine("*****************");
-
-                            string strPattern = "CN=NTDS Settings,CN=(?<servername>[^,]+),";
-                            Regex objRegEx = new Regex(strPattern, RegexOptions.IgnoreCase);
-                            MatchCollection colMatches = objRegEx.Matches(prop);
-                            if (colMatches.Count > 0)
+                            if (property.ToLower().Contains("lockouttime") && property.ToLower().Contains("pszlastoriginatingdsadn"))
                             {
-                                ld.orig_lock = colMatches[0].Groups["servername"].Value;
+                                XmlDocument xmlDoc = new XmlDocument();
+                                xmlDoc.LoadXml(property);
+
+                                Console.WriteLine("*****************");
+                                Console.WriteLine(xmlDoc.SelectSingleNode("DS_REPL_ATTR_META_DATA/pszLastOriginatingDsaDN").InnerText);
+                                Console.WriteLine(xmlDoc.SelectSingleNode("DS_REPL_ATTR_META_DATA/pszLastOriginatingDsaDN").Value);
+                                Console.WriteLine("*****************");
+
+                                string strPattern = "CN=NTDS Settings,CN=(?<servername>[^,]+),";
+                                Regex objRegEx = new Regex(strPattern, RegexOptions.IgnoreCase);
+                                MatchCollection colMatches = objRegEx.Matches(property);
+                                if (colMatches.Count > 0)
+                                {
+                                    ld.orig_lock = colMatches[0].Groups["servername"].Value;
+                                }
+
                             }
 
                         }
 
                     }
+                    else
+                    {
+                        ld.user_state = "Not Locked";
+                        ld.orig_lock = "N/A";
+                        //ld.lockout_time = "N/A";
+                        //long lngLockoutTime = (long)result.Properties["lockouttime"][0];
+                        //ld.lockout_time = DateTime.FromFileTime(lngLockoutTime).ToLocalTime().ToString();
 
+
+                    }
+                    ld.lockout_time = userPrincipal.AccountLockoutTime == null ? "N/A" : ((DateTime)userPrincipal.AccountLockoutTime).ToLocalTime().ToString();
+                    ld.last_bad_pwd = userPrincipal.LastBadPasswordAttempt == null ? "None" : ((DateTime)userPrincipal.LastBadPasswordAttempt).ToLocalTime().ToString();
+
+
+                    DirectoryEntry blah = AD.GetDirectoryEntry("LDAP://" + server + "/" + userPrincipal.DistinguishedName, strLoginID, strLoginPassword);
+                    Console.WriteLine(blah.Properties.Contains("msDS-ReplAttributeMetaData"));
+                    //Console.WriteLine(blah.Properties["msDS-ReplAttributeMetaData"][0]);
+                    //msDS-ReplAttributeMetaData
+
+                    foreach (var name in result.Properties.PropertyNames)
+                    {
+                        Console.WriteLine(name.ToString());
+                    }
                 }
-                else
-                {
-                    ld.user_state = "Not Locked";
-                    ld.orig_lock = "N/A";
-                    //ld.lockout_time = "N/A";
-                    //long lngLockoutTime = (long)result.Properties["lockouttime"][0];
-                    //ld.lockout_time = DateTime.FromFileTime(lngLockoutTime).ToLocalTime().ToString();
-                    
-                    
-                }
-                ld.lockout_time = userPrincipal.AccountLockoutTime==null? "N/A" : ((DateTime)userPrincipal.AccountLockoutTime).ToLocalTime().ToString();
-                ld.last_bad_pwd = userPrincipal.LastBadPasswordAttempt == null ? "None" : ((DateTime)userPrincipal.LastBadPasswordAttempt).ToLocalTime().ToString();
-
-
-                DirectoryEntry blah = GetDirectoryEntry("LDAP://" + server + "/" + userPrincipal.DistinguishedName);
-                Console.WriteLine(blah.Properties.Contains("msDS-ReplAttributeMetaData"));
-                //Console.WriteLine(blah.Properties["msDS-ReplAttributeMetaData"][0]);
-                //msDS-ReplAttributeMetaData
-
-                foreach (var name in result.Properties.PropertyNames)
-                {
-                    Console.WriteLine(name.ToString());
-                }
+                
 
             }
 
 
 
             return ld;
-        }
-
-        private PrincipalContext GetPrincipalContext(string server)
-        {
-            string strUsername = textBoxUsername.Text;
-            string strPassword = textBoxPassword.Text;
-
-            PrincipalContext principalContext = null;
-            if (!string.IsNullOrEmpty(server))
-            {
-                if (string.IsNullOrEmpty(strUsername))
-                {
-                    principalContext = new PrincipalContext(ContextType.Domain, server);
-                }
-                else
-                {
-                    principalContext = new PrincipalContext(ContextType.Domain, server, strUsername, strPassword);
-                }
-            }
-
-            return principalContext;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -585,6 +476,9 @@ namespace AD_Unlocker
 
         private void unlockToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string strLoginID = textBoxUsername.Text;
+            string strLoginPassword = textBoxPassword.Text;
+
             int intSelectedIndex = listView1.SelectedIndices[0];
             int colIndexServer = GetColumnIndex(listView1, "Server Full Name");
             int colUserState = GetColumnIndex(listView1, "User State");
@@ -593,7 +487,7 @@ namespace AD_Unlocker
             string server = listView1.Items[intSelectedIndex].SubItems[colIndexServer].Text;
             string username = listView1.Items[intSelectedIndex].SubItems[colUserId].Text; ;
                         
-            PrincipalContext principalContext = GetPrincipalContext(server);
+            PrincipalContext principalContext = AD.GetPrincipalContext(server,strLoginID,strLoginPassword);
             UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, username);
 
             userPrincipal.UnlockAccount();
@@ -620,6 +514,9 @@ namespace AD_Unlocker
         private void passwordResetToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+            string strLoginID = textBoxUsername.Text;
+            string strLoginPassword = textBoxPassword.Text;
+
             int intSelectedIndex = listView1.SelectedIndices[0];
             int colIndexServer = GetColumnIndex(listView1, "Server Full Name");
             int colUserId = GetColumnIndex(listView1, "User ID");
@@ -627,7 +524,7 @@ namespace AD_Unlocker
             string server = listView1.Items[intSelectedIndex].SubItems[colIndexServer].Text;
             string username = listView1.Items[intSelectedIndex].SubItems[colUserId].Text; ;
 
-            PrincipalContext principalContext = GetPrincipalContext(server);
+            PrincipalContext principalContext = AD.GetPrincipalContext(server,strLoginID,strLoginPassword);
             UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, username);
 
             using (PasswordReset passDlg = new PasswordReset())
@@ -656,5 +553,25 @@ namespace AD_Unlocker
             }
                 
         }
+
+        private void buttonFindUser_Click(object sender, EventArgs e)
+        {
+            using (UserSearch search = new UserSearch())
+            {
+                search.strServer = comboBoxDomain.Text;
+                search.strLoginID = textBoxUsername.Text;
+                search.strLoginPassword = textBoxPassword.Text;
+
+                DialogResult result = search.ShowDialog();
+                if (result == DialogResult.OK) {
+                    textBoxUserIDSearch.Text = search.selectedUserId;
+                }
+            }
+
+
+        }
     }
+
+
+    
 }
